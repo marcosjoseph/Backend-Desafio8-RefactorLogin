@@ -1,0 +1,26 @@
+<div class="productContainer">
+    {{#each products}}
+    <div class="productCard">
+        <div class="productCard_img">
+            <img src="{{this.img}}" alt="{{this.nombre}}"/>
+        </div>
+        <div class="productCard_info">
+            <h3>{{this.nombre}}</h3>
+            <p>{{this.descripcion}}</p>
+            <p>{{this.code}}</p>
+            <p>{{this.precio}}</p>
+            <p>{{this.stock}}</p>
+            <p>{{this.id}}</p>
+        </div>
+    </div>
+    {{/each}}
+    <div>
+        {{#if hasPrevPage}}
+            <a class="prev" href="/api/products?page={{prevPage}}"><button>Anterior</button></a>
+        {{/if}}
+
+        {{#if hasNextPage}}
+            <a class="next" href="/api/products?page={{nextPage}}"><button>Siguiente</button></a>
+        {{/if}}
+    </div>
+</div>
