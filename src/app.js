@@ -6,14 +6,16 @@ import MongoStore from "connect-mongo";
 import session from "express-session";
 import cookieParser from "cookie-parser";
 import dotenv from "dotenv";
+import passport from "passport";
+import passportConfig from "./config/passport.config.js";
 
 //Importo las routes
 import productsRouter from "./routes/products.router.js";
 import cartRouter from "./routes/cart.router.js";
 import viewsRouter from "./routes/views.router.js";
-import sessionRouter from "./routes/session.router.js";
-import signupRouter from "./routes/signup.router.js";
-import loginRouter from "./routes/login.router.js";
+import authRouter from "./routes/auth.router.js";
+// import signupRouter from "./routes/signup.router.js"; Las pasé al viewsRouter
+// import loginRouter from "./routes/login.router.js"; Las pasé al viewsRouter
 
 
 
@@ -57,31 +59,35 @@ app.engine("handlebars", handlebars.engine()); //motor
 app.set("views", __dirname + "/views"); // le decimos el directorio a utilizar
 app.set("view engine", "handlebars"); //
 
-// Inicializo y Configuro las Sessions
+// Inicializo y Configuro las Sessions. Trabaja con Mongo Store para que la info de la sesión se guarde en la base de datos a través del objeto request session.
 app.use(session({
     store: MongoStore.create({
-        mongoUrl: DB_URL,
-        ttl:600, // El tiempo en el que expirará la session
+        mongoUrl: DB_URL, // Para registrarlo en la base de datos.
+        ttl:60 * 60, // El tiempo en el que expirará la session
         mongoOptions: {
             useNewUrlParser:true,
         }
     }),
     secret: SESSIONSECRET,
-    resave:false,
+    resave:false, //o true?
     saveUninitialized: true,
 }))
 
 //Conecto las routes
 app.use("/api/products", productsRouter); //le pongo api para poder manejar el crud
 app.use("/api/carts", cartRouter);
-app.use("/", viewsRouter) //aca renderizo las vistas de los handlebars
-app.use("/api/", sessionRouter)
-app.use("/api/signup", signupRouter);
-app.use("/api/login", loginRouter);
+app.use("/api", authRouter)
+app.use("/", viewsRouter) //aca va todo lo que renderiza una vistas de los handlebars
 
 
-//Conecto el cookie-parser
+
+
+//Conecto el cookie-parser, convierte y pasa al front la info en una Cookie. 
 app.use(cookieParser(COOKIESECRET));
+
+passportConfig();
+app.use(passport.initialize());
+app.use(passport.session());
 
 
 //Configuro el socket

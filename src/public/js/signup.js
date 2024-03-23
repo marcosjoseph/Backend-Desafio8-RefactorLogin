@@ -3,15 +3,20 @@
 async function postSignup (first_name,last_name,email, password,age) {
     const data = {first_name, last_name,email,password,age};
 
-    const response = await fetch("/api/signup", {
-        method:"POST",
-        headers: {"Content-Type":"application/json",},
-        body: JSON.stringify(data),
-    });
+    try {
+        const response = await fetch("/api/signup",{
+            method:"POST",
+            headers: {"Content-Type":"application/json"},
+            body: JSON.stringify(data),
+        });
+    
+        const result = await response.json();
+        return result;
 
-    const result = await response.json();
-    return result;
-}
+    } catch(error) {
+        console.log(error);
+        return {success:false, message: error.message}
+    }}
 
 const signupForm = document.getElementById("signup-form");
 
@@ -26,7 +31,7 @@ signupForm.addEventListener("submit", async (event) => {
 
     const result = await postSignup(first_name,last_name,email, password,age);
 
-    if (result.respuesta === "Usuario creado con exito") {
-        window.location.href = "/api/login";
-    } else {alert("Datos Incorrectos")}
+    if (result.success === true) {
+        window.location.href = result.redirectUrl;
+    } else {alert(result.message)}
 })

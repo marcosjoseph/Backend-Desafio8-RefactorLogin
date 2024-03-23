@@ -1,6 +1,7 @@
 import {Router} from "express";
-import Products from "../dao/dbManagers/products.js";
-import Carts from "../dao/dbManagers/carts.js";
+import Products from "../dao/dbManagers/product.service.js";
+import Carts from "../dao/dbManagers/cart.service.js";
+// import isLoggedIn from "../middlewares/isLoggedIn.js";
 
 const router = Router();
 
@@ -15,6 +16,20 @@ router.get("/carts/:cid", async (req, res) => {
     const carts = new Carts();
     const result = await carts.getById(cid);
     res.render("carts", {title:"Carts", products: result.products, style:"css/products.css"})
+});
+
+router.get("/login",  async (req,res) => { //isLoggedIn,
+    res.render("login", {
+        title: "Inicia Sesión",
+        style:"/css/styles.css", //con o sin / adelante de css?
+    })
+});
+
+router.get("/signup",  async (req,res) => { //isLoggedIn,
+    res.render("signup", {
+        title:"Creá tu cuenta",
+        style:"/css/styles.css",
+    })
 });
 
 
