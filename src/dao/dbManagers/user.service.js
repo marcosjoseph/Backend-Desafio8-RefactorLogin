@@ -1,4 +1,4 @@
-import {UserModel} from "../models/user.model.js";
+import {UserModel} from "../mongo/models/user.model.js";
 
 // se crean diferentes capas que c/u tiene sus funciones. Por ejemplo, el modelo se conecta a la base de datos, ésta es la capa de servicio
 // que se conecta al modelo y crea la lógica del negocio, cada una tiene su funcion.
